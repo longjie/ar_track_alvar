@@ -70,6 +70,7 @@ double max_track_error;
 std::string cam_image_topic; 
 std::string cam_info_topic; 
 std::string output_frame;
+std::string marker_base_name; // tf frame name = marker_base_name + id
 
 void getCapCallback (const sensor_msgs::ImageConstPtr & image_msg);
 
@@ -123,7 +124,7 @@ void getCapCallback (const sensor_msgs::ImageConstPtr & image_msg)
                 tf::Transform markerPose = t * m; // marker pose in the camera frame
 
 				//Publish the transform from the camera to the marker		
-				std::string markerFrame = "ar_marker_";
+				std::string markerFrame = marker_base_name;
 				std::stringstream out;
 				out << id;
 				std::string id_string = out.str();
@@ -251,6 +252,8 @@ int main(int argc, char *argv[])
 
   if (argc > 7)
     pn.setParam("max_frequency", max_frequency);
+
+  pn.param<std::string>("marker_base_name", marker_base_name, "ar_marker_");
 
 	cam = new Camera(n, cam_info_topic);
 	tf_listener = new tf::TransformListener(n);
